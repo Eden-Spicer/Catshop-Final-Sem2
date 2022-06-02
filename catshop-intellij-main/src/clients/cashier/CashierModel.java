@@ -130,6 +130,33 @@ public class CashierModel extends Observable
     theState = State.process;                   // All Done
     setChanged(); notifyObservers(theAction);
   }
+
+ // Returns one product
+
+  public void doReturn(String productNum ) {
+    pn = productNum.trim();
+    int amount = 1;
+    String theAction = "";
+    try {
+      if (theStock.exists(pn)) {
+
+        Product pr = theStock.getDetails(pn);
+        theProduct = pr;
+        theProduct.setQuantity( amount );
+
+        theStock.addStock(pn, amount);
+        theAction = "Returned " + pr.getDescription();
+      } else {
+        theAction = "Unknown product number " + pn;
+      }
+    } catch( StockException e )
+    {
+      DEBUG.error( "%s\n%s",
+              "CashierModel.doCheck", e.getMessage() );
+      theAction = e.getMessage();
+    }
+    setChanged(); notifyObservers(theAction);
+  }
   
   /**
    * Customer pays for the contents of the basket

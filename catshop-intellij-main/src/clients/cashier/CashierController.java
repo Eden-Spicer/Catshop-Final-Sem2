@@ -46,4 +46,9 @@ public class CashierController
   {
     model.doBought();
   }
+
+  public void doReturn( String pn )
+  {
+    model.doReturn(pn);
+  }
 }
