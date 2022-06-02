@@ -1,4 +1,4 @@
-package src.remote;
+package remote;
 
 import catalogue.Basket;
 import middle.OrderException;

@@ -6,6 +6,9 @@ import middle.OrderProcessing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -23,6 +26,8 @@ public class PickView implements Observer
   private static final int W = 400;       // Width  of window pixels
 
   private final JLabel      theAction  = new JLabel();
+  private final JLabel      theCount   = new JLabel();
+  private final JLabel      pickingTime   = new JLabel();
   private final JTextArea   theOutput  = new JTextArea();
   private final JScrollPane theSP      = new JScrollPane();
   private final JButton     theBtPicked= new JButton( PICKED );
@@ -30,6 +35,16 @@ public class PickView implements Observer
   private OrderProcessing theOrder     = null;
   
   private PickController cont= null;
+
+  private Timer timer;
+  public int counterSecs, counterMins;
+  private String ddSecond;
+
+  // For testing timer
+  public PickView(){
+    pickTimer();
+    timer.start();
+  }
 
   /**
    * Construct the view
@@ -54,15 +69,25 @@ public class PickView implements Observer
     rootWindow.setLocation( x, y );
     
     Font f = new Font("Monospaced",Font.PLAIN,12);  // Font f is
+    Font fontTimer = new Font("Arial", Font.PLAIN, 24);
 
     theBtPicked.setBounds( 16, 25+60*0, 80, 40 );   // Check Button
     theBtPicked.addActionListener(                   // Call back code
-      e -> cont.doPick() );
+      e -> {cont.doPick(); counterSecs = 0;} );
     cp.add( theBtPicked );                          //  Add to canvas
 
     theAction.setBounds( 110, 25 , 270, 20 );       // Message area
     theAction.setText( "" );                        // Blank
     cp.add( theAction );                            //  Add to canvas
+
+    theCount.setBounds(30, 25+40*2, 80, 40);
+    theCount.setFont(fontTimer);
+    theCount.setText("");
+    cp.add(theCount);
+
+    pickingTime.setBounds(16, 25+60*1, 80, 40);
+    pickingTime.setText("");
+    cp.add(pickingTime);
 
     theSP.setBounds( 110, 55, 270, 205 );           // Scrolling pane
     theOutput.setText( "" );                        //  Blank
@@ -70,11 +95,30 @@ public class PickView implements Observer
     cp.add( theSP );                                //  Add to canvas
     theSP.getViewport().add( theOutput );           //  In TextArea
     rootWindow.setVisible( true );                  // Make visible
+
+    pickTimer();
   }
-  
+
   public void setController( PickController c )
   {
     cont = c;
+  }
+
+  public void pickTimer() {
+    DecimalFormat formatTime = new DecimalFormat("00");
+    timer = new Timer(1000, new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        counterSecs++;
+        ddSecond = formatTime.format(counterSecs);
+        theCount.setText(counterMins +":" + ddSecond);
+
+        if(counterSecs == 60){
+          counterSecs = 0;
+          counterMins++;
+        }
+      }
+    });
   }
 
   /**
@@ -93,8 +137,13 @@ public class PickView implements Observer
     if ( basket != null )
     {
       theOutput.setText( basket.getDetails() );
+      timer.start();
+      pickingTime.setText("Time to pick:");
     } else {
       theOutput.setText("");
+      timer.stop();
+      theCount.setText("");
+      pickingTime.setText("");
     }
   }
 

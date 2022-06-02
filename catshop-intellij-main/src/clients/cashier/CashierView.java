@@ -74,15 +74,15 @@ public class CashierView implements Observer
       e -> cont.doBuy() );
     cp.add( theBtBuy );                             //  Add to canvas
 
-    theBtReturn.setBounds(16, 25+60*2, 80, 40);
-    theBtReturn.addActionListener(
-            e -> cont.doReturn( theInput.getText()) );
-    cp.add( theBtReturn);
-
     theBtBought.setBounds( 16, 25+60*3, 80, 40 );   // Clear Button
     theBtBought.addActionListener(                  // Call back code
       e -> cont.doBought() );
     cp.add( theBtBought );                          //  Add to canvas
+
+    theBtReturn.setBounds(16, 25+60*2, 80, 40);
+    theBtReturn.addActionListener(
+            e -> cont.doReturn( theInput.getText()) );
+    cp.add( theBtReturn);
 
     theAction.setBounds( 110, 25 , 270, 20 );       // Message area
     theAction.setText( "" );                        // Blank

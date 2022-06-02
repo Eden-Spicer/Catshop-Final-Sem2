@@ -38,17 +38,17 @@ public class CashierController
   {
     model.doBuy();
   }
-  
+
+  public void doReturn( String pn )
+  {
+    model.doReturn(pn);
+  }
+
    /**
    * Bought interaction from view
    */
   public void doBought()
   {
     model.doBought();
-  }
-
-  public void doReturn( String pn )
-  {
-    model.doReturn(pn);
   }
 }
